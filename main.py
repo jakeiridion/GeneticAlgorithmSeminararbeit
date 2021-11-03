@@ -1,20 +1,21 @@
 import math
 import random
-import tabulate
 import numpy
 from typing import List
+import matplotlib.pyplot as plt
 
 
 class GeneticAlgorithm:
     def __init__(self):
         self._population_size: int = 10
         self._tournament_size: int = 2
+        self._fitness_function = lambda x: (-math.pow(x, 2) / 21) + 3 * x
         self._crossover_probability: float = 0.90
         self._mutation_probability: float = 0.01
         self._number_of_iterations = 100
 
     def create_initial_population(self) -> List:
-        return [numpy.random.randint(0, 2, 5).tolist() for _ in range(self._population_size)]
+        return [numpy.random.randint(0, 2, 6).tolist() for _ in range(self._population_size)]
 
     def tournament_selection(self, population):
         best = self._get_random_individual(population)[:]
@@ -26,7 +27,7 @@ class GeneticAlgorithm:
 
     def calculate_fitness(self, individual: List) -> float:
         x = int("".join(str(digit) for digit in individual), 2)
-        return (-math.pow(x, 2) / 10) + 3 * x
+        return self._fitness_function(x)
 
     def one_point_crossover(self, parent1: List, parent2: List) -> List:
         if random.random() < self._crossover_probability:
@@ -47,13 +48,12 @@ class GeneticAlgorithm:
         return population[random.randint(0, len(population)-1)]
 
     def run(self) -> int:
+        self._setup_graph()
         population = self.create_initial_population()[:]
         best = self._get_random_individual(population)[:]
         for _ in range(self._number_of_iterations):
             for individual in population:
-                print(f"Best: {best}: {self.calculate_fitness(best)}")
-                print(f"Challenger: {individual}: {self.calculate_fitness(individual)}")
-                print("---")
+                self._plot_dot(individual)
                 if self.calculate_fitness(individual) >= self.calculate_fitness(best):
                     best = individual[:]
             # Tournament Selection:
@@ -65,7 +65,19 @@ class GeneticAlgorithm:
                                                                     self._get_random_individual(population))
             # Flip Bit Mutation:
             population = [self.flip_bit_mutation(individual) for individual in crossed_over_population][:]
+        self._show_graph()
         return int("".join(str(digit) for digit in best), 2)
+
+    def _setup_graph(self):
+        plt.axis([0, 64, 0, 50])
+        plt.plot(numpy.arange(64), [genetic_algorithm._fitness_function(x) for x in range(64)])
+
+    def _plot_dot(self, individual: List):
+        plt.plot(int("".join(str(digit) for digit in individual), 2), self.calculate_fitness(individual), "ro")
+
+    def _show_graph(self):
+        plt.xlabel(f"Number of Iterations: {self._number_of_iterations}")
+        plt.show()
 
 
 if __name__ == '__main__':
