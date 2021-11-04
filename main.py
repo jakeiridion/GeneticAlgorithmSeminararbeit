@@ -12,12 +12,12 @@ class GeneticAlgorithm:
         self._fitness_function = lambda x: (-math.pow(x, 2) / 21) + 3 * x
         self._crossover_probability: float = 0.90
         self._mutation_probability: float = 0.01
-        self._number_of_iterations = 100
+        self._number_of_iterations: int = 100
 
     def create_initial_population(self) -> List:
         return [numpy.random.randint(0, 2, 6).tolist() for _ in range(self._population_size)]
 
-    def tournament_selection(self, population):
+    def tournament_selection(self, population: List) -> List:
         best = self._get_random_individual(population)[:]
         for _ in range(self._tournament_size-1):
             challenger = self._get_random_individual(population)[:]
@@ -54,7 +54,7 @@ class GeneticAlgorithm:
         for _ in range(self._number_of_iterations):
             for individual in population:
                 self._plot_dot(individual)
-                if self.calculate_fitness(individual) >= self.calculate_fitness(best):
+                if self.calculate_fitness(individual) > self.calculate_fitness(best):
                     best = individual[:]
             # Tournament Selection:
             population = [self.tournament_selection(population) for _ in range(self._population_size)][:]
@@ -77,6 +77,7 @@ class GeneticAlgorithm:
 
     def _show_graph(self):
         plt.xlabel(f"Number of Iterations: {self._number_of_iterations}")
+        plt.savefig('GA_Graph.png', bbox_inches='tight')
         plt.show()
 
 
