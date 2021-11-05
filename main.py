@@ -33,9 +33,15 @@ class GeneticAlgorithm:
                 best = challenger[:]
         return best
 
+    def _get_random_chromosome(self, population: Population) -> Chromosome:
+        return population[random.randint(0, len(population)-1)]
+
     def calculate_fitness(self, chromosome: Chromosome) -> float:
-        x = int("".join(str(digit) for digit in chromosome), 2)
+        x = self._get_individual(chromosome)
         return self._fitness_function(x)
+
+    def _get_individual(self, chromosome: Chromosome) -> int:
+        return int("".join(str(digit) for digit in chromosome), 2)
 
     def one_point_crossover(self, parent1: Chromosome, parent2: Chromosome) -> Population:
         if random.random() < self._crossover_probability:
@@ -51,9 +57,6 @@ class GeneticAlgorithm:
             if random.random() < self._mutation_probability:
                 chromosome[i] = 1 - chromosome[i]
         return chromosome
-
-    def _get_random_chromosome(self, population: Population) -> Chromosome:
-        return population[random.randint(0, len(population)-1)]
 
     def run(self) -> int:
         self._setup_graph()
@@ -74,14 +77,14 @@ class GeneticAlgorithm:
             # Flip Bit Mutation:
             population = [self.flip_bit_mutation(chromosome) for chromosome in crossed_over_population]
         self._show_graph()
-        return int("".join(str(digit) for digit in best), 2)
+        return self._get_individual(best)
 
     def _setup_graph(self):
         plt.axis([0, 64, 0, 50])
         plt.plot(numpy.arange(64), [genetic_algorithm._fitness_function(x) for x in range(64)])
 
-    def _plot_dot(self, chromosome: List):
-        plt.plot(int("".join(str(digit) for digit in chromosome), 2), self.calculate_fitness(chromosome), "ro")
+    def _plot_dot(self, chromosome: Chromosome):
+        plt.plot(self._get_individual(chromosome), self.calculate_fitness(chromosome), "ro")
 
     def _show_graph(self):
         plt.xlabel(f"Number of Iterations: {self._number_of_iterations}")
