@@ -81,7 +81,7 @@ class GeneticAlgorithm:
 
     def _setup_graph(self):
         plt.axis([0, 64, 0, 50])
-        plt.plot(numpy.arange(64), [genetic_algorithm._fitness_function(x) for x in range(64)])
+        plt.plot(numpy.arange(64), [self._fitness_function(x) for x in range(64)])
 
     def _plot_dot(self, chromosome: Chromosome):
         plt.plot(self._get_individual(chromosome), self.calculate_fitness(chromosome), "ro")
