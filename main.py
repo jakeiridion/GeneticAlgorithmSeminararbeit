@@ -18,7 +18,7 @@ class GeneticAlgorithm:
         self._population_size: int = 8
         self._tournament_size: int = 2
         self._fitness_function = lambda x: (-math.pow(x, 2) / 21) + 3 * x
-        self._crossover_probability: float = 0.90
+        self._crossover_probability: float = 0.9
         self._mutation_probability: float = 0.01
         self._number_of_iterations: int = 50
 
