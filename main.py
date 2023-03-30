@@ -1,7 +1,3 @@
-"""
-Author: Emil Jeleskovic (jakeiridion)
-"""
-
 import math
 import random
 import numpy
